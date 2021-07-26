@@ -1,50 +1,67 @@
-import React, { Component } from 'react'
-import Movies from './server/Movies'
+import React, { Component } from "react";
+
+import Movies from "./components/movies";
+import Series from "./components/series";
+import Home from "./components/home";
+
+
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import styled, { createGlobalStyle } from "styled-components"
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+`
+const Mlist = styled.ul`
+  background-color:rgba(26,36,46);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  width: 100%;
+  height: 3rem;
+  color: white;
+`
+
 
 class App extends Component {
-  state = {
-    movies: []
-  }
-
-  componentDidMount() {
-    this.getMoveis()
-  }
-
-  getMoveis = async () => {
-    const response = await Movies.get()
-    this.setState({
-      movies: response.data.results
-    })
-  }
-
-  renderMovies = () => {
-    const movies = this.state.movies.filter((movie) => movie.vote_average >= 8 && movie.vote_count > 2000);
-    return movies.map(movie => (
-      <div>
-      <p>{movie.title} - {movie.overview}</p>
-      <h2> {movie.vote_average} </h2>
-    </div>
-    ));
-  }
-
-
   render() {
-    console.log(this.state.movies)
     return (
-      <div>
-        {this.state.movies.length > 0 && (
-          <div>
-            {/* { this.state.movies.map((movie)=>(
-              <div>
-                <p>{movie.title} - {movie.overview}</p>
-                <h2> {movie.vote_average} </h2>
-              </div>
-            ))} */}
-            {this.renderMovies()}
-          </div>
-        )}
-      </div>
-    )
+      <Router>
+        <GlobalStyle />
+        <div>
+          <nav>
+            <Mlist>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/movies">Movies</Link>
+              </li>
+              <li>
+                <Link to="/series">Series</Link>
+              </li>
+            </Mlist>
+          </nav>
+
+          <Switch>
+            <Route path="/series">
+              <Series />
+            </Route>
+            <Route path="/movies">
+              <Movies />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
   }
 }
 
